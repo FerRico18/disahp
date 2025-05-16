@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # Servicio de Inventario
+  inventario-api:
+    build: ./services/inventario
+    ports:
+      - "8001:8000"
+    depends_on:
+      - inventario-db
+    environment:
+      - DB_HOST=inventario-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=inventario_db
+
+  inventario-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventario_db
+    volumes:
+      - inventario_data:/var/lib/postgresql/data
+
+  # Servicio de Empleados
+  empleados-api:
+    build: ./services/empleados
+    ports:
+      - "8002:8000"
+    depends_on:
+      - empleados-db
+    environment:
+      - DB_HOST=empleados-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=empleados_db
+
+  empleados-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: empleados_db
+    volumes:
+      - empleados_data:/var/lib/postgresql/data
+
+  # Servicio de Resguardos
+  resguardos-api:
+    build: ./services/resguardos
+    ports:
+      - "8003:8000"
+    depends_on:
+      - resguardos-db
+    environment:
+      - DB_HOST=resguardos-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=resguardos_db
+
+  resguardos-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: resguardos_db
+    volumes:
+      - resguardos_data:/var/lib/postgresql/data
+
+  # Servicio de Usuarios / Auth
+  auth-api:
+    build: ./services/auth
+    ports:
+      - "8004:8000"
+    depends_on:
+      - auth-db
+    environment:
+      - DB_HOST=auth-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=auth_db
+
+  auth-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+volumes:
+  inventario_data:
+  empleados_data:
+  resguardos_data:
+  auth_data:
